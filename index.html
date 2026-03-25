@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pancow Learning Hub</title>
+
+<style>
+/* PREMIUM COLOR PALETTE */
+:root {
+  --primary: #22c55e;
+  --primary-dark: #16a34a;
+  --bg-dark: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+body{
+  background: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* DECORATIVE BACKGROUND BLOBS */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+  z-index: -1;
+}
+
+/* HEADER - MODERN GLASSMOPHISM */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 24px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.logo-area{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-area img{
+  width:40px;
+  border-radius:10px;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.logo-area h2{
+  font-size:18px;
+  font-weight:700;
+  letter-spacing: -0.5px;
+}
+
+/* NAV BUTTONS */
+.nav-buttons{
+  display:flex;
+  gap:12px;
+}
+
+.nav-buttons button{
+  padding:10px 18px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-size:13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.login{
+  background: transparent;
+  border: 1.5px solid var(--primary) !important;
+  color: var(--primary);
+}
+
+.login:hover{
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.register{
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.register:hover{
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* HERO SECTION */
+.hero{
+  padding: 100px 24px 60px;
+  text-align:center;
+  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.05) 0%, transparent 70%);
+}
+
+.hero img.hero-logo{
+  width:120px;
+  border-radius:24px;
+  margin-bottom:25px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.hero h1{
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.hero h1 span{
+  background: linear-gradient(to right, #22c55e, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p{
+  max-width:550px;
+  margin:0 auto 35px;
+  color: var(--text-muted);
+  font-size: 17px;
+}
+
+.cta-btn{
+  padding:16px 36px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+
+.cta-btn:hover{
+  transform: scale(1.05) translateY(-3px);
+  background: var(--primary-dark);
+}
+
+/* FEATURES GRID */
+.features{
+  padding:80px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.features h2{
+  text-align:center;
+  margin-bottom:45px;
+  font-size:28px;
+  font-weight: 700;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+  gap:24px;
+}
+
+/* PREMIUM CARDS */
+.card{
+  background: var(--glass);
+  padding: 35px 25px;
+  border-radius: 24px;
+  text-align: center;
+  border: 1px solid var(--glass-border);
+  transition: all 0.4s ease;
+}
+
+.card:hover{
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--primary);
+  transform: translateY(-10px);
+}
+
+.icon{
+  width:64px;
+  height:64px;
+  border-radius:18px;
+  background: rgba(34, 197, 94, 0.15);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0 auto 20px;
+  font-size:28px;
+  color: var(--primary);
+}
+
+.card h3{
+  font-size:18px;
+  margin-bottom:12px;
+  font-weight: 700;
+}
+
+.card p{
+  font-size:14px;
+  color: var(--text-muted);
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:40px 20px;
+  font-size:14px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--glass-border);
+}
+
+/* MOBILE RESPONSIVENESS */
+@media(max-width:600px){
+  .hero h1{ font-size: 32px; }
+  .hero p { font-size: 15px; }
+  .cta-btn { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo-area">
+    <img src="logo.png" alt="Pancow">
+    <h2>Pancow Arena</h2>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="login" onclick="goLogin()">Login</button>
+    <button class="register" onclick="goRegister()">Join Now</button>
+  </div>
+</header>
+
+<section class="hero">
+  <img src="logo.png" class="hero-logo" alt="logo">
+  <h1>Level Up Your <span>Science Game</span></h1>
+  <p>
+    Master Biology, Chemistry & Physics with the ultimate arena for A/L students. 
+    Interactive quizzes, clear notes, and global leaderboards.
+  </p>
+  <button class="cta-btn" onclick="goRegister()">Start Free Journey</button>
+</section>
+
+<section class="features">
+  <h2>The Arena Experience</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>Rapid Quizzes</h3>
+      <p>Crush 10-minute challenges designed for quick mastery.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🏆</div>
+      <h3>Leaderboard</h3>
+      <p>Climb the ranks and compete with top science students.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📘</div>
+      <h3>Study Notes</h3>
+      <p>Access high-quality, concise notes tailored for exams.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🎯</div>
+      <h3>Daily Goals</h3>
+      <p>Stay consistent with customized daily practice tests.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 Pancow Learning Hub • Built for Excellence
+</footer>
+
+<script>
+function goLogin(){ window.location.href = "auth.html"; }
+function goRegister(){ window.location.href = "auth.html"; }
+</script>
+
+</body>
+</html>

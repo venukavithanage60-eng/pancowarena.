@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pancowarena</title>
+
+<style>
+  /* Minimalist Reset */
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f7f6; /* Soft neutral grey */
+  }
+
+  .card {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    padding: 48px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+
+  .logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1b;
+    margin: 0 0 32px 0;
+  }
+
+  /* Sharp Inputs */
+  input {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    margin-bottom: 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #2c5364;
+  }
+
+  /* Solid Action Button */
+  button {
+    width: 100%;
+    height: 50px;
+    background-color: #2c5364;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.2s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  /* Discrete Switch Text */
+  .switch {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #64748b;
+  }
+
+  #switchText {
+    color: #2c5364;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 4px;
+  }
+
+  #switchText:hover {
+    text-decoration: underline;
+  }
+
+  #message {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #ef4444; /* Error red */
+    min-height: 1.2em;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <img src="logo.png" class="logo" alt="Logo">
+  <h2 id="title">Login</h2>
+
+  <input type="email" id="email" placeholder="Email address" autocomplete="email">
+  <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+
+  <button id="btn" onclick="handleAuth()">Login</button>
+
+  <div class="switch">
+    <span id="hintText">Don't have an account?</span>
+    <span id="switchText" onclick="toggleMode()">Register</span>
+  </div>
+
+  <p id="message"></p>
+</div>
+
+<script type="module">
+/* YOUR ORIGINAL LOGIC - COMPLETELY UNTOUCHED */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDKvaLXC7nSM62hC_0PXx-_iXjJX_Kw7WQ",
+  authDomain: "pancow.firebaseapp.com",
+  projectId: "pancow",
+  storageBucket: "pancow.appspot.com",
+  messagingSenderId: "357673814983",
+  appId: "1:357673814983:web:d9aa4448bfc919452527e2"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+let isLogin = true;
+
+window.toggleMode = function() {
+  isLogin = !isLogin;
+  document.getElementById("title").innerText = isLogin ? "Login" : "Register";
+  document.getElementById("btn").innerText = isLogin ? "Login" : "Register";
+  document.getElementById("hintText").innerText = isLogin 
+    ? "Don't have an account?" 
+    : "Already have an account?";
+  document.getElementById("switchText").innerText = isLogin ? "Register" : "Login";
+}
+
+window.handleAuth = function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const msg = document.getElementById("message");
+
+  if (isLogin) {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => { window.location.href = "home.html"; })
+      .catch(err => { msg.innerText = err.message; });
+  } else {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => { window.location.href = "home.html"; })
+      .catch(err => { msg.innerText = err.message; });
+  }
+}
+</script>
+
+</body>
+</html>

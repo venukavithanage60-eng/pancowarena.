@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pancow Arena</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<style>
+:root { --primary: #22c55e; --bg: #0f172a; }
+body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+.container { max-width: 500px; width: 100%; }
+.card { background: white; color: #1e293b; padding: 20px; border-radius: 15px; margin-bottom: 15px; }
+input { width: 100%; padding: 12px; box-sizing: border-box; border-radius: 10px; border: 1px solid #ccc; margin-bottom: 10px; }
+button { width: 100%; padding: 12px; margin-top: 8px; cursor: pointer; border-radius: 10px; border: 1px solid #ccc; font-weight: bold; }
+.ans-btn:hover { background: #f1f5f9; }
+.correct-style { background: #dcfce7 !important; color: #16a34a; border-color: #22c55e; }
+.wrong-style { background: #fee2e2 !important; color: #dc2626; border-color: #ef4444; }
+#timerBar { height: 5px; background: var(--primary); width: 100%; margin-bottom: 10px; transition: width 1s linear; }
+#analysisBox { display:none; margin-top:15px; padding:10px; border-top:1px solid #eee; }
+.rank-row { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee; color: #475569; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2 style="text-align:center;color:var(--primary)">PANCOW ARENA</h2>
+
+    <div class="card">
+        <h3 style="margin-top:0; font-size:1rem;">🏆 Today's Leaders</h3>
+        <div id="rankList">Connecting...</div>
+    </div>
+
+    <div id="startBox" class="card">
+        <h3>Daily Biology Challenge</h3>
+        <input type="text" id="userNameInput" placeholder="Enter your name..." maxlength="15">
+        <p id="limitMsg" style="font-size: 0.8rem; color: #64748b;">One entry allowed per day.</p>
+        <button id="startBtn" onclick="startQuiz()" style="background:var(--primary); color:white; border:none;">START BATTLE</button>
+    </div>
+
+    <div id="quizBox" class="card" style="display:none;">
+        <div id="timerBar"></div>
+        <div style="display:flex; justify-content: space-between;">
+            <div id="progress" style="font-size:0.8rem; color:var(--primary); font-weight:bold;"></div>
+            <div id="timerText" style="font-size:0.8rem; font-weight:bold;">10s</div>
+        </div>
+        <h3 id="questionText"></h3>
+        <div id="optionsContainer"></div>
+
+        <div id="analysisBox">
+            <strong id="resultFeedback"></strong>
+            <p id="explanationText" style="font-size:0.9rem;"></p>
+            <button onclick="nextQuestion()" style="background:#1e293b; color:white;">NEXT QUESTION</button>
+        </div>
+    </div>
+
+    <div id="resultBox" class="card" style="display:none; text-align:center;">
+        <h2>Battle Finished!</h2>
+        <h1 id="finalScoreDisplay" style="color:var(--primary);">0</h1>
+        <button onclick="location.reload()">BACK TO HOME</button>
+    </div>
+</div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyDKvaLXC7nSM62hC_0PXx-_iXjJX_Kw7WQ",
+    authDomain: "pancow.firebaseapp.com",
+    projectId: "pancow"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const todayID = new Date().toISOString().split("T")[0];
+const quizData = [
+    { q: "C4 plants first accept CO2 using?", options: ["RuBP","PEP","PGA"], correct: "PEP", note: "PEP is the first acceptor in the mesophyll cells." },
+    { q: "Nematodes have?", options: ["Circular muscles","Only longitudinal muscles","Both"], correct: "Only longitudinal muscles", note: "This causes their signature thrashing movement." }
+];
+
+let currentIndex = 0;
+let currentScore = 0;
+let timeLeft = 10;
+let timerInterval;
+let playerName = localStorage.getItem("pancow_name") || "";
+
+if(playerName) document.getElementById("userNameInput").value = playerName;
+
+// 🏆 LOAD LEADERBOARD
+function loadLeaderboard() {
+    db.collection("bio_daily_arena")
+      .where("day", "==", todayID)
+      .orderBy("score", "desc")
+      .limit(5)
+      .get()
+      .then(snap => {
+          let html = "";
+          snap.forEach((doc, i) => {
+              let d = doc.data();
+              html += `<div class="rank-row"><span>${i+1}. ${d.name}</span><b>${d.score}</b></div>`;
+          });
+          document.getElementById("rankList").innerHTML = html || "Be the first to play!";
+      });
+}
+
+// 🚀 START GAME
+function startQuiz() {
+    playerName = document.getElementById("userNameInput").value.trim();
+    if(!playerName) return alert("Please enter your name!");
+    
+    localStorage.setItem("pancow_name", playerName);
+
+    // Check if played today
+    const docId = playerName.toLowerCase() + "_" + todayID;
+    db.collection("bio_daily_arena").doc(docId).get().then(doc => {
+        if(doc.exists) {
+            alert("You have already entered the Arena today! Come back tomorrow.");
+        } else {
+            document.getElementById("startBox").style.display = "none";
+            document.getElementById("quizBox").style.display = "block";
+            showQuestion();
+        }
+    });
+}
+
+function showQuestion() {
+    clearInterval(timerInterval);
+    timeLeft = 10;
+    updateTimerUI();
+
+    let data = quizData[currentIndex];
+    document.getElementById("progress").innerText = `Q ${currentIndex + 1} / ${quizData.length}`;
+    document.getElementById("questionText").innerText = data.q;
+    document.getElementById("analysisBox").style.display = "none";
+    
+    let optionsHtml = "";
+    data.options.forEach(opt => {
+        optionsHtml += `<button class="ans-btn" onclick="handleAnswer(this, '${opt}')">${opt}</button>`;
+    });
+    document.getElementById("optionsContainer").innerHTML = optionsHtml;
+
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerUI();
+        if(timeLeft <= 0) {
+            handleAnswer(null, null); // Time out
+        }
+    }, 1000);
+}
+
+function updateTimerUI() {
+    document.getElementById("timerText").innerText = timeLeft + "s";
+    document.getElementById("timerBar").style.width = (timeLeft * 10) + "%";
+}
+
+function handleAnswer(btn, choice) {
+    clearInterval(timerInterval);
+    let data = quizData[currentIndex];
+    let allBtns = document.querySelectorAll(".ans-btn");
+    allBtns.forEach(b => b.disabled = true);
+
+    document.getElementById("analysisBox").style.display = "block";
+    
+    if(choice === data.correct) {
+        currentScore += 10;
+        if(btn) btn.classList.add("correct-style");
+        document.getElementById("resultFeedback").innerText = "✅ CORRECT";
+    } else {
+        if(btn) btn.classList.add("wrong-style");
+        document.getElementById("resultFeedback").innerText = choice === null ? "⏰ TIME OUT" : "❌ WRONG";
+    }
+    document.getElementById("explanationText").innerText = data.note;
+}
+
+function nextQuestion() {
+    currentIndex++;
+    if(currentIndex < quizData.length) {
+        showQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    document.getElementById("quizBox").style.display = "none";
+    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("finalScoreDisplay").innerText = "Final Score: " + currentScore;
+
+    const docId = playerName.toLowerCase() + "_" + todayID;
+    db.collection("bio_daily_arena").doc(docId).set({
+        name: playerName,
+        score: currentScore,
+        day: todayID,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => loadLeaderboard());
+}
+
+loadLeaderboard();
+</script>
+
+</body>
+</html>

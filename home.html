@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pancowarena Dashboard</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+}
+
+.navbar h2 {
+  font-size: 20px;
+}
+
+.navbar img {
+  width: 40px;
+  border-radius: 10px;
+}
+
+/* CONTAINER */
+.container {
+  padding: 20px;
+}
+
+/* TITLE */
+.title {
+  margin: 15px 0 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 15px;
+}
+
+/* CARD */
+.card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: 0.25s ease;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain; 
+  background: #fff;     
+  padding: 10px;        
+}
+
+/* CONTENT */
+.card-content {
+  padding: 15px;
+  text-align: center; /* This keeps everything centered */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ensures the button is centered in the flex container */
+  justify-content: center;
+}
+
+.card h3 {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+/* BUTTON */
+.card button {
+  padding: 8px 20px; /* Made slightly wider for better look */
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-block;
+}
+
+.card button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+}
+
+/* MOBILE */
+@media (max-width: 500px) {
+  .title {
+    font-size: 18px;
+  }
+  .card img {
+    height: 110px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <h2>📚 Pancowarena</h2>
+  <img src="logo.png" alt="logo">
+</div>
+
+<div class="container">
+  <div class="title">Main Dashboard</div>
+
+  <div class="grid">
+
+    <div class="card" onclick="openQuizzes()">
+      <img src="quiz.png" alt="Quizzes">
+      <div class="card-content">
+        <h3>Quizzes</h3>
+        <button>Start</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openPapers()">
+      <img src="past.jpg" alt="Past Papers">
+      <div class="card-content">
+        <h3>Past Papers</h3>
+        <button>View</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openNotes()">
+      <img src="short.jpg" alt="Short Notes">
+      <div class="card-content">
+        <h3>Short Notes</h3>
+        <button>Read</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openMusic()">
+      <img src="music.jpg" alt="Music">
+      <div class="card-content">
+        <h3>Music</h3>
+        <button>Listen</button>
+      </div>
+    </div>
+
+    <div class="card" onclick="openStudy()">
+      <img src="study.png" alt="Study Room">
+      <div class="card-content">
+        <h3>Study Room</h3>
+        <button>Enter</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+  <script>
+function openQuizzes() {
+  window.location.href = "quiz.html";
+}
+
+function openPapers() {
+  window.location.href = "pastpapers.html";
+}
+
+function openNotes() {
+  window.location.href = "notes.html";
+}
+
+function openMusic() {
+  window.location.href = "music.html";
+}
+
+function openStudy() {
+  window.location.href = "study.html";
+}
+</script>
+
+</body>
+</html>
