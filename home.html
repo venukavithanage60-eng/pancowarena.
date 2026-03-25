@@ -1,214 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pancowarena Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pancowarena | Dashboard</title>
+  <style>
+    :root {
+      --primary: #2c5364;
+      --accent: #00d2ff;
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+    }
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
-}
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
 
-body {
-  background: linear-gradient(135deg, #1f1c2c, #928dab);
-  color: #fff;
-  min-height: 100vh;
-}
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(44, 83, 100, 0.3) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(15, 32, 39, 0.3) 0px, transparent 50%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-/* NAVBAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
-}
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 5%;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-.navbar h2 {
-  font-size: 20px;
-}
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-.navbar img {
-  width: 40px;
-  border-radius: 10px;
-}
+    /* Profile Avatar Styling */
+    .user-profile {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      transition: transform 0.2s;
+      object-fit: cover;
+    }
+    .user-profile:hover { transform: scale(1.1); }
 
-/* CONTAINER */
-.container {
-  padding: 20px;
-}
+    /* Main Content */
+    .container { max-width: 1200px; margin: 0 auto; padding: 3rem 5%; }
+    
+    .header-meta { margin-bottom: 2.5rem; }
+    .header-meta h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+    .header-meta p { color: #94a3b8; font-size: 1rem; }
 
-/* TITLE */
-.title {
-  margin: 15px 0 20px;
-  font-size: 22px;
-  font-weight: bold;
-}
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
 
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 15px;
-}
+    /* Professional Card */
+    .card {
+      position: relative;
+      height: 220px;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-/* CARD */
-.card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: 0.25s ease;
-  border: 1px solid rgba(255,255,255,0.1);
-  display: flex;
-  flex-direction: column;
-}
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
 
-.card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-}
+    .card-image {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.5); /* Makes text pop */
+      transition: transform 0.6s ease;
+      z-index: 1;
+    }
 
-.card img {
-  width: 100%;
-  height: 120px;
-  object-fit: contain; 
-  background: #fff;     
-  padding: 10px;        
-}
+    .card:hover .card-image { transform: scale(1.1); filter: brightness(0.7); }
 
-/* CONTENT */
-.card-content {
-  padding: 15px;
-  text-align: center; /* This keeps everything centered */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Ensures the button is centered in the flex container */
-  justify-content: center;
-}
+    .card-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 10%, transparent 80%);
+    }
 
-.card h3 {
-  font-size: 15px;
-  margin-bottom: 10px;
-  color: #fff;
-}
+    .card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+    .card-action {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
-/* BUTTON */
-.card button {
-  padding: 8px 20px; /* Made slightly wider for better look */
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  display: inline-block;
-}
-
-.card button:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
-}
-
-/* MOBILE */
-@media (max-width: 500px) {
-  .title {
-    font-size: 18px;
-  }
-  .card img {
-    height: 110px;
-  }
-}
-</style>
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .header-meta h1 { font-size: 1.6rem; }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="navbar">
-  <h2>📚 Pancowarena</h2>
-  <img src="logo.png" alt="logo">
-</div>
+  <nav class="navbar">
+    <div class="brand">
+      <img src="logo.png" style="height: 32px;" alt="logo">
+      <h2>PANCOWARENA</h2>
+    </div>
+    <img src="https://ui-avatars.com/api/?name=User" id="userPhoto" class="user-profile" title="Click to Logout">
+  </nav>
 
-<div class="container">
-  <div class="title">Main Dashboard</div>
+  <main class="container">
+    <header class="header-meta">
+      <h1 id="welcomeText">Welcome back</h1>
+      <p>Select a module to continue your learning journey.</p>
+    </header>
 
-  <div class="grid">
+    <div class="grid">
+      <div class="card" onclick="location.href='quiz.html'">
+        <img src="quiz.png" class="card-image" alt="Quizzes">
+        <div class="card-content">
+          <h3>Interactive Quizzes</h3>
+          <div class="card-action">Challenge yourself →</div>
+        </div>
+      </div>
 
-    <div class="card" onclick="openQuizzes()">
-      <img src="quiz.png" alt="Quizzes">
-      <div class="card-content">
-        <h3>Quizzes</h3>
-        <button>Start</button>
+      <div class="card" onclick="location.href='pastpapers.html'">
+        <img src="past.jpg" class="card-image" alt="Past Papers">
+        <div class="card-content">
+          <h3>Exam Archive</h3>
+          <div class="card-action">View Past Papers →</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="location.href='notes.html'">
+        <img src="short.jpg" class="card-image" alt="Short Notes">
+        <div class="card-content">
+          <h3>Quick Notes</h3>
+          <div class="card-action">Read Summaries →</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="location.href='music.html'">
+        <img src="music.jpg" class="card-image" alt="Music">
+        <div class="card-content">
+          <h3>Lofi & Focus</h3>
+          <div class="card-action">Start Listening →</div>
+        </div>
+      </div>
+
+      <div class="card" onclick="location.href='study.html'">
+        <img src="study.png" class="card-image" alt="Study Room">
+        <div class="card-content">
+          <h3>Study Room</h3>
+          <div class="card-action">Join Session →</div>
+        </div>
       </div>
     </div>
+  </main>
 
-    <div class="card" onclick="openPapers()">
-      <img src="past.jpg" alt="Past Papers">
-      <div class="card-content">
-        <h3>Past Papers</h3>
-        <button>View</button>
-      </div>
-    </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-    <div class="card" onclick="openNotes()">
-      <img src="short.jpg" alt="Short Notes">
-      <div class="card-content">
-        <h3>Short Notes</h3>
-        <button>Read</button>
-      </div>
-    </div>
+    // YOUR FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyDKvaLXC7nSM62hC_0PXx-_iXjJX_Kw7WQ",
+      authDomain: "pancow.firebaseapp.com",
+      projectId: "pancow",
+      storageBucket: "pancow.appspot.com",
+      messagingSenderId: "357673814983",
+      appId: "1:357673814983:web:d9aa4448bfc919452527e2"
+    };
 
-    <div class="card" onclick="openMusic()">
-      <img src="music.jpg" alt="Music">
-      <div class="card-content">
-        <h3>Music</h3>
-        <button>Listen</button>
-      </div>
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    <div class="card" onclick="openStudy()">
-      <img src="study.png" alt="Study Room">
-      <div class="card-content">
-        <h3>Study Room</h3>
-        <button>Enter</button>
-      </div>
-    </div>
+    // PROFILE & AUTH LOGIC
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 1. Update Profile Image (Use Firebase photo or a nice generated Initial)
+        const photoEl = document.getElementById("userPhoto");
+        photoEl.src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=00d2ff&color=fff`;
 
-  </div>
-</div>
+        // 2. Update Welcome Text
+        const name = user.displayName || user.email.split('@')[0];
+        document.getElementById("welcomeText").innerText = `Welcome back, ${name}`;
+      } else {
+        // 3. Security: Kick out if not logged in
+        window.location.href = "index.html"; 
+      }
+    });
 
-
-  <script>
-function openQuizzes() {
-  window.location.href = "quiz.html";
-}
-
-function openPapers() {
-  window.location.href = "pastpapers.html";
-}
-
-function openNotes() {
-  window.location.href = "notes.html";
-}
-
-function openMusic() {
-  window.location.href = "music.html";
-}
-
-function openStudy() {
-  window.location.href = "study.html";
-}
-</script>
-
+    // Logout Functionality
+    document.getElementById("userPhoto").addEventListener("click", () => {
+      if(confirm("Are you sure you want to log out?")) {
+        signOut(auth).then(() => {
+          window.location.href = "index.html";
+        });
+      }
+    });
+  </script>
 </body>
 </html>
